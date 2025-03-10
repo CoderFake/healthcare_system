@@ -8,7 +8,6 @@ from PIL import Image, ImageTk
 class NavigationMenu:
 
     def __init__(self, parent, app):
-
         self.parent = parent
         self.app = app
         
@@ -20,11 +19,16 @@ class NavigationMenu:
         self._create_menu_buttons()
     
     def _create_menu_buttons(self):
-
         button_frame = ttk.Frame(self.frame)
         button_frame.pack(fill=tk.X, padx=5, pady=5)
         
         nav_buttons = [
+            {
+                'text': 'Dashboard',
+                'icon': 'icons/dashboard.png',
+                'command': self.app.load_dashboard,
+                'tooltip': 'Xem tổng quan'
+            },
             {
                 'text': 'Quản lý bệnh nhân',
                 'icon': 'icons/patient.png',
@@ -53,7 +57,7 @@ class NavigationMenu:
         logout_button = self._create_button(
             button_frame,
             'Đăng xuất',
-            self.app.logout,
+            lambda: self._handle_logout(),
             'icons/logout.png',
             'Đăng xuất khỏi hệ thống'
         )
@@ -67,6 +71,13 @@ class NavigationMenu:
             'Thoát khỏi ứng dụng'
         )
         exit_button.pack(side=tk.RIGHT, padx=5)
+    
+    def _handle_logout(self):
+        print("NavigationMenu: Đăng xuất được click")
+        if hasattr(self.app, 'logout'):
+            self.app.logout()
+        else:
+            print("ERROR: app.logout không tồn tại!")
     
     def _create_nav_button(self, parent, btn_info, index):
         button = self._create_button(
@@ -125,13 +136,14 @@ class NavigationMenu:
             return None
     
     def _create_tooltip(self, widget, text):
-
         tooltip = ToolTip(widget, text)
     
     def show(self):
+        print("Hiển thị NavigationMenu")
         self.frame.grid(row=0, column=0, sticky="ew")
     
     def hide(self):
+        print("Ẩn NavigationMenu")
         self.frame.grid_remove()
     
     def update_menu_state(self):
